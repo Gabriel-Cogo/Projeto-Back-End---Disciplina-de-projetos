@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers; // << AQUI! (não é Api)
 
-use App\Http\Controllers\Controller;
 use App\Models\Paciente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,15 +11,23 @@ class PacienteController extends Controller
 {
     public function index()
     {
-        $list = Paciente::where('user_id', Auth::id())->orderBy('id','desc')->get();
-        return response()->json($list);
+        $pacientes = Paciente::where('user_id', Auth::id())
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+        return view('pacientes.index', compact('pacientes'));
+    }
+
+    public function create()
+    {
+        return view('pacientes.create');
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nome' => ['required','string','max:255'],
-            'cpf'  => ['required','string','max:14','unique:pacientes,cpf'],
+            'nome' => ['required', 'string', 'max:255'],
+            'cpf'  => ['required', 'string', 'max:14', 'unique:pacientes,cpf'],
         ]);
 
         $data['cpf'] = preg_replace('/\D+/', '', $data['cpf']);
@@ -31,15 +38,15 @@ class PacienteController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        Log::info('Paciente criado (API)', ['user_id' => Auth::id(), 'paciente_id' => $paciente->id]);
+        Log::info('Paciente criado (WEB)', ['user_id' => Auth::id(), 'paciente_id' => $paciente->id]);
 
-        return response()->json($paciente, 201);
+        return redirect()->route('pacientes.index')->with('success', 'Paciente cadastrado com sucesso!');
     }
 
-    public function show(Paciente $paciente)
+    public function edit(Paciente $paciente)
     {
         $this->authorizePaciente($paciente);
-        return response()->json($paciente);
+        return view('pacientes.edit', compact('paciente'));
     }
 
     public function update(Request $request, Paciente $paciente)
@@ -47,19 +54,17 @@ class PacienteController extends Controller
         $this->authorizePaciente($paciente);
 
         $data = $request->validate([
-            'nome' => ['sometimes','required','string','max:255'],
-            'cpf'  => ['sometimes','required','string','max:14','unique:pacientes,cpf,'.$paciente->id],
+            'nome' => ['required', 'string', 'max:255'],
+            'cpf'  => ['required', 'string', 'max:14', 'unique:pacientes,cpf,' . $paciente->id],
         ]);
 
-        if (isset($data['cpf'])) {
-            $data['cpf'] = preg_replace('/\D+/', '', $data['cpf']);
-        }
+        $data['cpf'] = preg_replace('/\D+/', '', $data['cpf']);
 
         $paciente->update($data);
 
-        Log::info('Paciente atualizado (API)', ['user_id' => Auth::id(), 'paciente_id' => $paciente->id]);
+        Log::info('Paciente atualizado (WEB)', ['user_id' => Auth::id(), 'paciente_id' => $paciente->id]);
 
-        return response()->json($paciente);
+        return redirect()->route('pacientes.index')->with('success', 'Paciente atualizado com sucesso!');
     }
 
     public function destroy(Paciente $paciente)
@@ -69,9 +74,9 @@ class PacienteController extends Controller
         $id = $paciente->id;
         $paciente->delete();
 
-        Log::warning('Paciente excluído (API)', ['user_id' => Auth::id(), 'paciente_id' => $id]);
+        Log::warning('Paciente excluído (WEB)', ['user_id' => Auth::id(), 'paciente_id' => $id]);
 
-        return response()->json(null, 204);
+        return redirect()->route('pacientes.index')->with('success', 'Paciente removido com sucesso!');
     }
 
     private function authorizePaciente(Paciente $paciente): void

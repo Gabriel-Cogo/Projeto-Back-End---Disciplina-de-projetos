@@ -10,22 +10,18 @@ class LogRequestResponse
 {
     public function handle(Request $request, Closure $next)
     {
-        $userId = optional($request->user())->id;
-
-        Log::channel('requests')->info('API REQUEST', [
-            'user_id' => $userId,
-            'method'  => $request->method(),
-            'path'    => $request->path(),
-            'ip'      => $request->ip(),
-            'payload' => $request->except(['password','password_confirmation']),
+        Log::info('API REQUEST', [
+            'method' => $request->method(),
+            'path'   => $request->path(),
+            'ip'     => $request->ip(),
+            'user'   => optional($request->user())->id,
+            'body'   => $request->except(['password','password_confirmation']),
         ]);
 
         $response = $next($request);
 
-        Log::channel('requests')->info('API RESPONSE', [
-            'user_id'  => $userId,
-            'status'   => $response->getStatusCode(),
-            // Evita logar corpo inteiro por privacidade; só status é suficiente
+        Log::info('API RESPONSE', [
+            'status' => $response->getStatusCode(),
         ]);
 
         return $response;

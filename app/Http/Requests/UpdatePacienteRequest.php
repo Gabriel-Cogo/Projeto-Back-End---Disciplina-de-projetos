@@ -6,22 +6,27 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePacienteRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function rules(): array
     {
-        $id = $this->route('paciente')->id ?? null;
+        $pacienteId = $this->route('paciente')?->id;
 
         return [
-            'nome' => ['required','string','max:255'],
-            'cpf'  => ['required','string','max:14','unique:pacientes,cpf,' . $id],
+            'nome' => ['sometimes','required','string','max:255'],
+            'cpf'  => ['sometimes','required','string','max:14','unique:pacientes,cpf,'.$pacienteId],
         ];
     }
 
-    public function prepareForValidation(): void
+    public function messages(): array
     {
-        if ($this->has('cpf')) {
-            $this->merge(['cpf' => preg_replace('/\D+/', '', $this->cpf)]);
-        }
+        return [
+            'nome.required' => 'O nome é obrigatório.',
+            'cpf.required'  => 'O CPF é obrigatório.',
+            'cpf.unique'    => 'Já existe um paciente com este CPF.',
+        ];
     }
 }

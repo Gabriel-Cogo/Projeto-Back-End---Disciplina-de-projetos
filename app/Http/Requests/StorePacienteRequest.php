@@ -6,7 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StorePacienteRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        // Já estamos autenticando via Sanctum nas rotas
+        return true;
+    }
 
     public function rules(): array
     {
@@ -16,10 +20,12 @@ class StorePacienteRequest extends FormRequest
         ];
     }
 
-    public function prepareForValidation(): void
+    public function messages(): array
     {
-        if ($this->has('cpf')) {
-            $this->merge(['cpf' => preg_replace('/\D+/', '', $this->cpf)]);
-        }
+        return [
+            'nome.required' => 'O nome é obrigatório.',
+            'cpf.required'  => 'O CPF é obrigatório.',
+            'cpf.unique'    => 'Já existe um paciente com este CPF.',
+        ];
     }
 }
