@@ -1,21 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Api\AuthApiController;
 use App\Http\Controllers\Api\PacienteController;
-use App\Http\Middleware\LogRequestResponse; // se quiser logar req/res
 
-// Auth pública
+// ---------- AUTENTICAÇÃO ----------
 Route::post('/register', [AuthApiController::class, 'register']);
 Route::post('/login',    [AuthApiController::class, 'login']);
 
-// Protegidas (token Sanctum)
-Route::middleware(['auth:sanctum', LogRequestResponse::class])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me',     [AuthApiController::class, 'me']);
     Route::post('/logout',[AuthApiController::class, 'logout']);
 
-    // CRUD Pacientes
-    Route::apiResource('pacientes', PacienteController::class)
-        ->parameters(['pacientes' => 'paciente']); // binder pelo {paciente}
+    // ---------- PACIENTES ----------
+    Route::get('/pacientes',                 [PacienteController::class, 'index']);
+    Route::post('/pacientes',                [PacienteController::class, 'store']);
+    Route::get('/pacientes/{paciente}',      [PacienteController::class, 'show']);
+    Route::put('/pacientes/{paciente}',      [PacienteController::class, 'update']);
+    Route::delete('/pacientes/{paciente}',   [PacienteController::class, 'destroy']);
 });
+
+// Rota de diagnóstico (opcional): deve responder em GET /api/ping
+Route::get('/ping', fn () => response()->json(['pong' => true]));
