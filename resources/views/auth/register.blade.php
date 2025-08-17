@@ -3,50 +3,76 @@
 @section('title','Cadastro de Administrador')
 
 @section('content')
-<div class="max-w-md mx-auto bg-white shadow rounded p-6">
-    <h1 class="text-xl font-semibold mb-4">Criar conta (Administrador)</h1>
+<div style="max-width:500px;margin:40px auto;background:#fff;border-radius:12px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:30px;font-family:Arial, sans-serif;
+            line-height:1.6;color:#333;">
 
-    <form method="POST" action="{{ route('register.post') }}" class="space-y-4">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:25px;text-align:center;color:#222;">
+        Criar conta (Administrador)
+    </h1>
+
+    <form method="POST" action="{{ route('register.post') }}">
         @csrf
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Nome</label>
+        <div style="margin-bottom:18px;">
+            <label style="display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#444;">
+                Nome
+            </label>
             <input type="text" name="name" value="{{ old('name') }}" required
-                   class="mt-1 block w-full border-gray-300 rounded-md" />
+                   style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;
+                          font-size:14px;" />
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">E-mail</label>
+        <div style="margin-bottom:18px;">
+            <label style="display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#444;">
+                E-mail
+            </label>
             <input type="email" name="email" value="{{ old('email') }}" required
-                   class="mt-1 block w-full border-gray-300 rounded-md" />
+                   style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;
+                          font-size:14px;" />
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Senha</label>
+        <div style="margin-bottom:18px;">
+            <label style="display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#444;">
+                Senha
+            </label>
             <input type="password" name="password" required
-                   class="mt-1 block w-full border-gray-300 rounded-md" />
-            <p class="text-xs text-gray-500 mt-1">Mínimo 8 caracteres, com letras e números.</p>
+                   style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;
+                          font-size:14px;" />
+            <p style="font-size:12px;color:#666;margin-top:6px;">
+                Mínimo 8 caracteres, com letras e números.
+            </p>
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Confirmar Senha</label>
+        <div style="margin-bottom:18px;">
+            <label style="display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#444;">
+                Confirmar Senha
+            </label>
             <input type="password" name="password_confirmation" required
-                   class="mt-1 block w-full border-gray-300 rounded-md" />
+                   style="width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;
+                          font-size:14px;" />
         </div>
 
-        <div class="flex items-start">
-            <input id="lgpd_terms" name="lgpd_terms" type="checkbox" required class="h-4 w-4 border-gray-300 rounded mt-1">
-            <label for="lgpd_terms" class="ml-2 text-sm text-gray-700">
+        <div style="display:flex;align-items:flex-start;margin-bottom:20px;">
+            <input id="lgpd_terms" name="lgpd_terms" type="checkbox" required
+                   style="margin-top:4px;width:16px;height:16px;" />
+            <label for="lgpd_terms" style="margin-left:8px;font-size:13px;color:#444;line-height:1.4;">
                 Declaro que li e aceito os
-                <a href="#" class="text-blue-600 hover:underline">Termos de Uso de Dados (LGPD)</a>.
+                <a href="{{ route('legal.termos') }}" style="color:#2563eb;text-decoration:none;">
+                    Termos de Uso de Dados (LGPD)
+                </a>.
             </label>
         </div>
 
-        <div class="flex items-center justify-between">
-            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <button type="submit"
+                    style="background:#16a34a;color:#fff;padding:10px 18px;border:none;border-radius:6px;
+                           font-size:14px;font-weight:600;cursor:pointer;transition:background 0.3s;">
                 Criar conta
             </button>
-            <a href="{{ route('login') }}" class="text-sm text-blue-600 hover:underline">Já tenho conta</a>
+            <a href="{{ route('login') }}" style="font-size:13px;color:#2563eb;text-decoration:none;">
+                Já tenho conta
+            </a>
         </div>
     </form>
 </div>

@@ -47,10 +47,3 @@ Route::middleware('auth')->group(function () {
     Route::put('/pacientes/{paciente}',      [PacienteController::class, 'update'])->name('pacientes.update');
     Route::delete('/pacientes/{paciente}',   [PacienteController::class, 'destroy'])->name('pacientes.destroy');
 });
-
-// Fallback elegante
-Route::fallback(function () {
-    return auth()->check()
-        ? redirect()->route('dashboard')
-        : redirect()->route('login');
-});
